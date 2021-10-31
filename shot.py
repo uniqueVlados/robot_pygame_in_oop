@@ -1,7 +1,3 @@
-from random import randint
-
-from robot import Robot
-
 SPEED = 40
 
 

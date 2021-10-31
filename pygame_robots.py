@@ -6,7 +6,6 @@ from robot import Robot
 from robotAttack import RobotAttack
 from health_holder import HealthHolder
 from shot import Shot
-from time import sleep
 
 # ------IMAGE---------------------
 robot_img = pygame.image.load("img/robot.png")
