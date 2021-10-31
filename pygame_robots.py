@@ -18,6 +18,8 @@ def check_final(robot, robotAttack_list):
         font = pygame.font.SysFont('couriernew', 100)
         text = font.render(str('YOU WIN'), True, THECOLORS['green'])
         screen.blit(text, (WIDTH // 2 - 250, 100))
+
+
 # -------------------------------------------
 
 # ------IMAGE---------------------
@@ -29,7 +31,7 @@ shot_img = pygame.transform.scale(shot_img, (40, 40))
 
 
 # ------CONST---------------------
-WIDTH = 1200
+WIDTH = 800
 HEIGHT = 800
 SIZE = 80
 # --------------------------------
@@ -49,57 +51,42 @@ pygame.display.set_icon(robotAttack_img)
 # --------------------------------
 
 # ------CREATE OBJECTS-----------------------
-robot = Robot((WIDTH // 2 - SIZE // 2, HEIGHT // 2 - SIZE // 2), robot_img, count_robotAttack)
+robot = Robot((WIDTH // 2 - Robot.SIZE, HEIGHT // 2 - Robot.SIZE), robot_img, count_robotAttack)
 RobotAttack.create_robotAttack(robotAttack_list, robotAttack_img, screen, robot)
 health_holder = HealthHolder(robot)
 dead_holder = DeadHolder(robot)
-shot = Shot(robot, shot_img)
+# shot = Shot(robot, shot_img)
+shoots = []
 # -------------------------------------------
 
-
-screen.blit(robot_img, (WIDTH // 2 - SIZE // 2, HEIGHT // 2 - SIZE // 2))
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-        # TODO: РАЗОБРАТЬСЯ
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_a:
-                robot.move_a(SIZE)
-            elif event.key == pygame.K_w:
-                robot.move_w(SIZE)
-            elif event.key == pygame.K_d:
-                robot.move_d(SIZE)
-            elif event.key == pygame.K_s:
-                robot.move_s(SIZE)
-            elif event.key == pygame.K_RIGHT:
-                shot.do_active()
-                shot.set_side("d")
-                shot.set_start_pos(robot)
-            elif event.key == pygame.K_LEFT:
-                shot.do_active()
-                shot.set_side("a")
-                shot.set_start_pos(robot)
-            elif event.key == pygame.K_UP:
-                shot.do_active()
-                shot.set_side("w")
-                shot.set_start_pos(robot)
-            elif event.key == pygame.K_DOWN:
-                shot.do_active()
-                shot.set_side("s")
-                shot.set_start_pos(robot)
+            if event.key in [pygame.K_a, pygame.K_w, pygame.K_d, pygame.K_s]:
+                robot.move(chr(event.key))
+
+            elif event.key in [pygame.K_RIGHT, pygame.K_LEFT, pygame.K_UP, pygame.K_DOWN]:
+                shoots.append(Shot(robot, shot_img, event.key, screen))
+
     screen.fill((0, 0, 0))
 
     robot.update(screen)
     health_holder.update(screen)
     dead_holder.update(screen)
 
-    shot.control_shot(screen)
-    robot.robotAttack_collision(robotAttack_list, shot)
+    for shot in shoots[::-1]:
+        if not shot.is_active:
+            shoots.remove(shot)
+        else:
+            shot.update()
+            robot.robotAttack_collision(robotAttack_list, shot)
+
     check_final(robot, robotAttack_list)
-    RobotAttack.diff_move(robotAttack_list, screen, SIZE, WIDTH, HEIGHT)
+    RobotAttack.diff_move(robotAttack_list, screen, WIDTH, HEIGHT)
 
     clock.tick(60)
     pygame.display.update()

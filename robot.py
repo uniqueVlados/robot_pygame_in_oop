@@ -8,7 +8,6 @@ class Robot:
         self.pos_x, self.pos_y = pos[0], pos[1]
         self.health = health
         self.image = robot_img
-        self.SIZE = 80
         self.hit = 0
         self.count_robotAttack = count_robotAttack
 
@@ -25,33 +24,47 @@ class Robot:
     def get_hit(self):
         return self.hit
 
-    def move_a(self, size):
+    def move_a(self):
         if self.health > 0:
-                self.pos_x -= size
+            self.pos_x -= Robot.SIZE
 
-    def move_w(self,size):
+    def move_w(self):
         if self.health > 0:
-                self.pos_y -= size
+            self.pos_y -= Robot.SIZE
 
-    def move_d(self,size):
+    def move_d(self):
         if self.health > 0:
-                self.pos_x += size
+            self.pos_x += Robot.SIZE
 
-    def move_s(self,size):
+    def move_s(self):
         if self.health > 0:
-                self.pos_y += size
+            self.pos_y += Robot.SIZE
 
-    # TODO: РАЗОБРАТЬСЯ
-    # directions = {"a": move_a(SIZE),
-    #               "w": move_w(SIZE),
-    #               "s": move_s(SIZE),
-    #               "d": move_d(SIZE)}
+    def move(self, key):
+        directions = {"a": self.move_a,
+                      "w": self.move_w,
+                      "s": self.move_s,
+                      "d": self.move_d}
+
+        if move_in_direction := directions.get(key):
+            move_in_direction()
+
+
+    def get_collison(self, ra, obj=None):
+        if obj is None:
+            obj = self
+        if ra.pos_x - 40 <= obj.pos_x <= ra.pos_x + 40 and ra.pos_y - 40 <= obj.pos_y <= ra.pos_y + 70:
+            return True
+        else:
+            return False
 
     def robotAttack_collision(self, robotAttack_list, shot):
         for ra in robotAttack_list[::-1]:
-            if ra.pos_x - 40 <= shot.pos_x <= ra.pos_x + 40 and ra.pos_y - 40 <= shot.pos_y <= ra.pos_y + 70:
+            if self.get_collison(ra, shot):
                 robotAttack_list.remove(ra)
                 self.hit += 1
-            elif ra.pos_x - 40 <= self.pos_x <= ra.pos_x + 40 and ra.pos_y - 40 <= self.pos_y <= ra.pos_y + 70:
+                shot.is_active = False
+
+            elif self.get_collison(ra):
                 robotAttack_list.remove(ra)
                 self.health -= 100 // self.count_robotAttack

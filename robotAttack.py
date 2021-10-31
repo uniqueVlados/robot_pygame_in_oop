@@ -23,33 +23,37 @@ class RobotAttack(Robot):
         if self.pos_x < 0:
             self.pos_x = WIDTH
 
-    def move(self, SIZE, WIDTH, HEIGHT):
+    def move(self, WIDTH, HEIGHT):
         neg_pos = choice([1, -1])
         if neg_pos == 1:
             if neg_pos == 1:
-                self.pos_x += SIZE
+                self.pos_x += Robot.SIZE
             else:
-                self.pos_x -= SIZE
+                self.pos_x -= Robot.SIZE
         else:
             if neg_pos == 1:
-                self.pos_y += SIZE
+                self.pos_y += Robot.SIZE
             else:
-                self.pos_y -= SIZE
+                self.pos_y -= Robot.SIZE
         self.check_pos(WIDTH, HEIGHT)
 
     @staticmethod
-    def diff_move(robotAttack_list, screen, SIZE, WIDTH, HEIGHT):
+    def diff_move(robotAttack_list, screen, WIDTH, HEIGHT):
         for r in robotAttack_list:
             r.update(screen)
             r.counter += 1
             if r.counter == r.speed:
-                r.move(SIZE, WIDTH, HEIGHT)
+                r.move(WIDTH, HEIGHT)
                 r.counter = 0
+
+    @staticmethod
+    def _count_coord(length):
+        return length // randint(1, length // Robot.SIZE) - Robot.SIZE
 
     @staticmethod
     def create_robotAttack(robotAttack_list, image, screen, robot):
         WIDTH, HEIGHT = screen.get_size()
         for i in range(robot.count_robotAttack):
-            robotAttack = RobotAttack((Robot.SIZE * randint(1, WIDTH // Robot.SIZE) - Robot.SIZE, Robot.SIZE *
-                                       randint(1, HEIGHT // Robot.SIZE) - Robot.SIZE), image)
+            robotAttack = RobotAttack((RobotAttack._count_coord(WIDTH),
+                                       RobotAttack._count_coord(HEIGHT)), image)
             robotAttack_list.append(robotAttack)
