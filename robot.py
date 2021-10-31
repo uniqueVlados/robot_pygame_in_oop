@@ -1,3 +1,6 @@
+from pygame import Vector2
+
+
 class Robot:
     SIZE = 80
 
@@ -22,13 +25,33 @@ class Robot:
     def get_hit(self):
         return self.hit
 
-    def move(self, side, size):
+    def move_a(self, size):
         if self.health > 0:
-            if side == "a":
                 self.pos_x -= size
-            elif side == "w":
+
+    def move_w(self,size):
+        if self.health > 0:
                 self.pos_y -= size
-            elif side == "d":
+
+    def move_d(self,size):
+        if self.health > 0:
                 self.pos_x += size
-            elif side == "s":
+
+    def move_s(self,size):
+        if self.health > 0:
                 self.pos_y += size
+
+    # TODO: РАЗОБРАТЬСЯ
+    # directions = {"a": move_a(SIZE),
+    #               "w": move_w(SIZE),
+    #               "s": move_s(SIZE),
+    #               "d": move_d(SIZE)}
+
+    def robotAttack_collision(self, robotAttack_list, shot):
+        for ra in robotAttack_list[::-1]:
+            if ra.pos_x - 40 <= shot.pos_x <= ra.pos_x + 40 and ra.pos_y - 40 <= shot.pos_y <= ra.pos_y + 70:
+                robotAttack_list.remove(ra)
+                self.hit += 1
+            elif ra.pos_x - 40 <= self.pos_x <= ra.pos_x + 40 and ra.pos_y - 40 <= self.pos_y <= ra.pos_y + 70:
+                robotAttack_list.remove(ra)
+                self.health -= 100 // self.count_robotAttack

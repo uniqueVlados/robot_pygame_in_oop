@@ -7,6 +7,19 @@ from robotAttack import RobotAttack
 from health_holder import HealthHolder
 from shot import Shot
 
+
+# -----------FUNCTION------------------------
+def check_final(robot, robotAttack_list):
+    if robot.get_health() <= 0:
+        font = pygame.font.SysFont('couriernew', 100)
+        text = font.render(str('YOU DEAD'), True, THECOLORS['red'])
+        screen.blit(text, (WIDTH // 2 - 250, 100))
+    elif len(robotAttack_list) == 0 and robot.get_health() > 0:
+        font = pygame.font.SysFont('couriernew', 100)
+        text = font.render(str('YOU WIN'), True, THECOLORS['green'])
+        screen.blit(text, (WIDTH // 2 - 250, 100))
+# -------------------------------------------
+
 # ------IMAGE---------------------
 robot_img = pygame.image.load("img/robot.png")
 robotAttack_img = pygame.image.load("img/robotAttack.png")
@@ -26,7 +39,6 @@ robotAttack_list = []
 # --------------------------------
 
 count_robotAttack = int(input("Сколько врагов создать? "))
-
 
 # ------PYGAME--------------------
 pygame.init()
@@ -52,15 +64,16 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        # TODO: РАЗОБРАТЬСЯ
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_a:
-                robot.move("a", SIZE)
+                robot.move_a(SIZE)
             elif event.key == pygame.K_w:
-                robot.move("w", SIZE)
+                robot.move_w(SIZE)
             elif event.key == pygame.K_d:
-                robot.move("d", SIZE)
+                robot.move_d(SIZE)
             elif event.key == pygame.K_s:
-                robot.move("s", SIZE)
+                robot.move_s(SIZE)
             elif event.key == pygame.K_RIGHT:
                 shot.do_active()
                 shot.set_side("d")
@@ -83,49 +96,10 @@ while True:
     health_holder.update(screen)
     dead_holder.update(screen)
 
-    shot.counter += 1
-    if shot.counter == shot.speed:
-        if shot.side == "a":
-            shot.move_a(50)
-        elif shot.side == "w":
-            shot.move_w(50)
-        elif shot.side == "s":
-            shot.move_s(50)
-        elif shot.side == "d":
-            shot.move_d(50)
-        shot.counter = 0
-    if shot.get_active():
-        shot.update(screen)
+    shot.control_shot(screen)
+    robot.robotAttack_collision(robotAttack_list, shot)
+    check_final(robot, robotAttack_list)
+    RobotAttack.diff_move(robotAttack_list, screen, SIZE, WIDTH, HEIGHT)
 
-    for r in robotAttack_list:
-        r.update(screen)
-        r.counter += 1
-        if r.counter == r.speed:
-            r.move(SIZE, WIDTH, HEIGHT)
-            r.counter = 0
-
-    # ---------DELETE ROBOTATTACK IF COLLISION SHOT------
-    for ra in robotAttack_list:
-        if ra.pos_x - 40 <= shot.pos_x <= ra.pos_x + 40 and ra.pos_y - 40 <= shot.pos_y <= ra.pos_y + 70:
-            robotAttack_list.remove(ra)
-            robot.hit += 1
-        if ra.pos_x - 40 <= robot.pos_x <= ra.pos_x + 40 and ra.pos_y - 40 <= robot.pos_y <= ra.pos_y + 70:
-            robotAttack_list.remove(ra)
-            robot.health -= 100 // robot.count_robotAttack
-    # ---------------------------------------------------
-
-    # ---------FINAL GAME--------------------------------
-    if robot.get_health() <= 0:
-        font = pygame.font.SysFont('couriernew', 100)
-        text = font.render(str('YOU DEAD'), True, THECOLORS['red'])
-        screen.blit(text, (WIDTH // 2 - 250, 100))
-
-    elif len(robotAttack_list) == 0 and robot.get_health() > 0:
-        font = pygame.font.SysFont('couriernew', 100)
-        text = font.render(str('YOU WIN'), True, THECOLORS['green'])
-        screen.blit(text, (WIDTH // 2 - 250, 100))
-
-
-    # ---------------------------------------------------
     clock.tick(60)
     pygame.display.update()

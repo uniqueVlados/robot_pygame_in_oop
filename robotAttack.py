@@ -1,16 +1,15 @@
 from random import randint, choice
 from robot import Robot
 
-SPEED_START = 50
-SPEED_END = 100
-COUNT_ROBOT = 0
-
 
 class RobotAttack(Robot):
+    SPEED_START = 50
+    SPEED_END = 100
+    COUNT_ROBOT = 0
 
     def __init__(self, pos, image, health=100):
         super().__init__(pos, image, health)
-        self.speed = randint(SPEED_START, SPEED_END)
+        self.speed = randint(RobotAttack.SPEED_START, RobotAttack.SPEED_END)
         self.counter = 0
         count_robot = None
 
@@ -37,6 +36,15 @@ class RobotAttack(Robot):
             else:
                 self.pos_y -= SIZE
         self.check_pos(WIDTH, HEIGHT)
+
+    @staticmethod
+    def diff_move(robotAttack_list, screen, SIZE, WIDTH, HEIGHT):
+        for r in robotAttack_list:
+            r.update(screen)
+            r.counter += 1
+            if r.counter == r.speed:
+                r.move(SIZE, WIDTH, HEIGHT)
+                r.counter = 0
 
     @staticmethod
     def create_robotAttack(robotAttack_list, image, screen, robot):
