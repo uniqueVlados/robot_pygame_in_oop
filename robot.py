@@ -50,21 +50,19 @@ class Robot:
             move_in_direction()
 
 
-    def get_collison(self, ra, obj=None):
-        if obj is None:
-            obj = self
-        if ra.pos_x - 40 <= obj.pos_x <= ra.pos_x + 40 and ra.pos_y - 40 <= obj.pos_y <= ra.pos_y + 70:
+    def get_collison(self, ra, size_img, obj):
+        if ra.pos_x - size_img <= obj.pos_x <= ra.pos_x + size_img and ra.pos_y - size_img <= \
+                obj.pos_y <= ra.pos_y + size_img:
             return True
-        else:
-            return False
+        return False
 
-    def robotAttack_collision(self, robotAttack_list, shot):
+    def robotAttack_collision(self, robotAttack_list, robotAttack_img, shot_img,  shot, robot):
         for ra in robotAttack_list[::-1]:
-            if self.get_collison(ra, shot):
+            if self.get_collison(ra, shot_img,  shot):
                 robotAttack_list.remove(ra)
                 self.hit += 1
                 shot.is_active = False
 
-            elif self.get_collison(ra):
-                robotAttack_list.remove(ra)
+            elif self.get_collison(ra, robotAttack_img, robot):
+                robotAttack_list.remove(ra, robotAttack_img, shot_img)
                 self.health -= 100 // self.count_robotAttack

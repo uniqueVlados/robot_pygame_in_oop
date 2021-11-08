@@ -12,13 +12,7 @@ class HealthHolder:
         return self.robot_link
 
     def update(self, screen):
-        if self.robot_link.get_health() > 85:
-            text = self.font.render(str(self.robot_link.get_health()), True, THECOLORS["green"])
-        elif 60 < self.robot_link.get_health() <= 85:
-            text = self.font.render(str(self.robot_link.get_health()), True, THECOLORS["yellow"])
-        elif 25 <= self.robot_link.get_health() <= 60:
-            text = self.font.render(str(self.robot_link.get_health()), True, THECOLORS["orange"])
-        elif 0 <= self.robot_link.get_health() < 25:
-            text = self.font.render(str(self.robot_link.get_health()), True, THECOLORS["red"])
+        color = ["red", "orange", "yellow", "green"]
+        text = self.font.render(str(self.robot_link.get_health()), True, THECOLORS[color[(self.robot_link.get_health()
+                                                                                          - 1) // 25]])
         screen.blit(text, (10, 10))
-

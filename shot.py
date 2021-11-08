@@ -64,25 +64,3 @@ class Shot:
     def update(self):
         self.move(self.side)
         self.screen.blit(self.image, (self.pos_x, self.pos_y))
-
-    # def control_shot(self, screen):
-    #     self.counter += 1
-    #     if self.counter == self.speed:
-    #         if self.side == "a":
-    #             self.move_a(50)
-    #         elif self.side == "w":
-    #             self.move_w(50)
-    #         elif self.side == "s":
-    #             self.move_s(50)
-    #         elif self.side == "d":
-    #             self.move_d(50)
-    #         self.counter = 0
-    #     if self.get_active():
-    #         self.update(screen)
-
-
-
-
-
-
-

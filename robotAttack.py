@@ -7,23 +7,24 @@ class RobotAttack(Robot):
     SPEED_END = 100
     COUNT_ROBOT = 0
 
-    def __init__(self, pos, image, health=100):
+    def __init__(self, pos, image, screen, health=100):
         super().__init__(pos, image, health)
         self.speed = randint(RobotAttack.SPEED_START, RobotAttack.SPEED_END)
         self.counter = 0
+        self.WIDTH, self.HEIGHT = screen.get_size()
         count_robot = None
 
-    def check_pos(self, WIDTH, HEIGHT):
-        if self.pos_y > HEIGHT:
+    def check_pos(self):
+        if self.pos_y > self.HEIGHT:
             self.pos_y = 0
-        if self.pos_x > WIDTH:
+        if self.pos_x > self.WIDTH:
             self.pos_x = 0
         if self.pos_y < 0:
-            self.pos_y = HEIGHT
+            self.pos_y = self.HEIGHT
         if self.pos_x < 0:
-            self.pos_x = WIDTH
+            self.pos_x = self.WIDTH
 
-    def move(self, WIDTH, HEIGHT):
+    def move(self):
         neg_pos = choice([1, -1])
         if neg_pos == 1:
             if neg_pos == 1:
@@ -35,15 +36,15 @@ class RobotAttack(Robot):
                 self.pos_y += Robot.SIZE
             else:
                 self.pos_y -= Robot.SIZE
-        self.check_pos(WIDTH, HEIGHT)
+        self.check_pos()
 
     @staticmethod
-    def diff_move(robotAttack_list, screen, WIDTH, HEIGHT):
+    def diff_move(robotAttack_list, screen):
         for r in robotAttack_list:
             r.update(screen)
             r.counter += 1
             if r.counter == r.speed:
-                r.move(WIDTH, HEIGHT)
+                r.move()
                 r.counter = 0
 
     @staticmethod
@@ -55,5 +56,5 @@ class RobotAttack(Robot):
         WIDTH, HEIGHT = screen.get_size()
         for i in range(robot.count_robotAttack):
             robotAttack = RobotAttack((RobotAttack._count_coord(WIDTH),
-                                       RobotAttack._count_coord(HEIGHT)), image)
+                                       RobotAttack._count_coord(HEIGHT)), image, screen)
             robotAttack_list.append(robotAttack)
