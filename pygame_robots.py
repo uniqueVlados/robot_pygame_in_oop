@@ -24,22 +24,15 @@ def check_final(robot, robotAttack_list):
 
 
 # ------CONST---------------------
-WIDTH = 800
-HEIGHT = 800
-SIZE = 80
-ROBOT_IMG_SIZE = 80
-SHOT_IMG_SIZE = 40
+WIDTH = 720
+HEIGHT = 720
+
 # --------------------------------
 
 # ------IMAGE---------------------
 robot_img = pygame.image.load("img/robot.png")
-robot_img = pygame.transform.scale(robot_img, (ROBOT_IMG_SIZE, ROBOT_IMG_SIZE))
-
 robotAttack_img = pygame.image.load("img/robotAttack.png")
-robotAttack_img = pygame.transform.scale(robotAttack_img, (ROBOT_IMG_SIZE, ROBOT_IMG_SIZE))
-
 shot_img = pygame.image.load("img/shot.png")
-shot_img = pygame.transform.scale(shot_img, (SHOT_IMG_SIZE, SHOT_IMG_SIZE))
 # --------------------------------
 
 # ------VAR-----------------------
@@ -57,7 +50,7 @@ pygame.display.set_icon(robotAttack_img)
 # --------------------------------
 
 # ------CREATE OBJECTS-----------------------
-robot = Robot((WIDTH // 2 - Robot.SIZE, HEIGHT // 2 - Robot.SIZE), robot_img, count_robotAttack)
+robot = Robot((0, 0), robot_img, count_robotAttack)
 RobotAttack.create_robotAttack(robotAttack_list, robotAttack_img, screen, robot)
 health_holder = HealthHolder(robot)
 dead_holder = DeadHolder(robot)
@@ -89,10 +82,11 @@ while True:
             shoots.remove(shot)
         else:
             shot.update()
-            robot.robotAttack_collision(robotAttack_list, ROBOT_IMG_SIZE, SHOT_IMG_SIZE,  shot, robot)
+            robot.robotAttack_collision(robotAttack_list, shot)
 
     check_final(robot, robotAttack_list)
     RobotAttack.diff_move(robotAttack_list, screen)
-
+    # print(robot.pos)
+    # print(robotAttack_list)
     clock.tick(60)
     pygame.display.update()
