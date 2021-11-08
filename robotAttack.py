@@ -1,4 +1,6 @@
 from random import randint, choice
+
+import robot
 from robot import Robot
 
 
@@ -49,7 +51,8 @@ class RobotAttack(Robot):
 
     @staticmethod
     def _count_coord(length):
-        return length // randint(1, length // Robot.SIZE) - Robot.SIZE
+        return Robot.SIZE * randint(1, length // Robot.SIZE)
+
 
     @staticmethod
     def create_robotAttack(robotAttack_list, image, screen, robot):

@@ -2,7 +2,7 @@ from pygame import Vector2
 
 
 class Robot:
-    SIZE = 80
+    SIZE = 72
 
     def __init__(self, pos, robot_img, count_robotAttack, health=100):
         self.pos_x, self.pos_y = pos[0], pos[1]
@@ -10,6 +10,10 @@ class Robot:
         self.image = robot_img
         self.hit = 0
         self.count_robotAttack = count_robotAttack
+        Robot.SIZE = self.image.get_size()[0]
+
+    def __repr__(self):
+        return f"({self.pos_x}, {self.pos_y})"
 
     @property
     def pos(self):
@@ -50,19 +54,19 @@ class Robot:
             move_in_direction()
 
 
-    def get_collison(self, ra, size_img, obj):
-        if ra.pos_x - size_img <= obj.pos_x <= ra.pos_x + size_img and ra.pos_y - size_img <= \
-                obj.pos_y <= ra.pos_y + size_img:
-            return True
-        return False
+    def get_collison(self, ra, obj):
+        print(f"R: {obj.pos_x, obj.pos_y} A: {ra.pos_x, ra.pos_y}")
+        return ra.pos_x <= obj.pos_x <= ra.pos_x + ra.image.get_size()[0] and ra.pos_y <= \
+                obj.pos_y <= ra.pos_y + ra.image.get_size()[1]
 
-    def robotAttack_collision(self, robotAttack_list, robotAttack_img, shot_img,  shot, robot):
+    def robotAttack_collision(self, robotAttack_list, shot):
         for ra in robotAttack_list[::-1]:
-            if self.get_collison(ra, shot_img,  shot):
+            if self.get_collison(ra, shot):
                 robotAttack_list.remove(ra)
                 self.hit += 1
                 shot.is_active = False
 
-            elif self.get_collison(ra, robotAttack_img, robot):
-                robotAttack_list.remove(ra, robotAttack_img, shot_img)
+            elif self.get_collison(ra, self):
+                print("CHECK ROB COL")
+                robotAttack_list.remove(ra)
                 self.health -= 100 // self.count_robotAttack
