@@ -1,5 +1,6 @@
 import pygame
 from pygame.color import THECOLORS
+from screen import Screen
 
 
 class DeadHolder:
@@ -13,5 +14,4 @@ class DeadHolder:
 
     def update(self, screen):
         text = self.font.render(str(self.robot_link.get_hit()), True, THECOLORS["white"])
-        WIDTH, HEIGHT = screen.get_size()
-        screen.blit(text, (WIDTH - 60, 10))
+        screen.blit(text, ( Screen.WIDTH - 60, 10))

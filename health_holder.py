@@ -4,7 +4,7 @@ from pygame.color import THECOLORS
 
 class HealthHolder:
     def __init__(self, robot):
-        self.font = pygame.font.SysFont('couriernew', 60)
+        self.font = pygame.font.SysFont('couriernew', 50)
         self.robot_link = robot
 
     @property

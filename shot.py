@@ -1,11 +1,13 @@
 import pygame
+from robot import Robot
+from screen import Screen
 
 
 class Shot:
     SPEED = 10
 
     def __init__(self, robot, image, side, screen):
-        self.pos_x, self.pos_y = robot.pos[0] + 30, robot.pos[1] + 30
+        self.pos_x, self.pos_y = robot.pos[0] + Robot.SIZE // 4, robot.pos[1] + Robot.SIZE // 4
         self.image = image
         self.is_active = True
         self.counter = 0
@@ -18,15 +20,15 @@ class Shot:
     def set_start_pos(self, robot):
         self.pos_x, self.pos_y = robot.pos[0] + 30, robot.pos[1] + 30
 
-    @property
-    def screen_width(self):
-        width, height = self.screen.get_size()
-        return width
-
-    @property
-    def screen_height(self):
-        width, height = self.screen.get_size()
-        return height
+    # @property
+    # def screen_width(self):
+    #     width, height = self.screen.get_size()
+    #     return width
+    #
+    # @property
+    # def screen_height(self):
+    #     width, height = self.screen.get_size()
+    #     return height
 
     def _move_a(self):
         if self.pos_x > 0:
@@ -41,13 +43,13 @@ class Shot:
             self.is_active = False
 
     def _move_d(self):
-        if self.pos_x < self.screen_width - self.image.get_size()[0]:
+        if self.pos_x < Screen.WIDTH - self.image.get_size()[0]:
             self.pos_x += Shot.SPEED
         else:
             self.is_active = False
 
     def _move_s(self):
-        if self.pos_y < self.screen_height -  self.image.get_size()[1]:
+        if self.pos_y < Screen.HEIGHT -  self.image.get_size()[1]:
             self.pos_y += Shot.SPEED
         else:
             self.is_active = False

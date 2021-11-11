@@ -1,8 +1,6 @@
 from random import randint, choice
-
-import robot
 from robot import Robot
-
+from screen import Screen
 
 class RobotAttack(Robot):
     SPEED_START = 50
@@ -13,18 +11,17 @@ class RobotAttack(Robot):
         super().__init__(pos, image, health)
         self.speed = randint(RobotAttack.SPEED_START, RobotAttack.SPEED_END)
         self.counter = 0
-        self.WIDTH, self.HEIGHT = screen.get_size()
         count_robot = None
 
     def check_pos(self):
-        if self.pos_y > self.HEIGHT:
+        if self.pos_y > Screen.HEIGHT:
             self.pos_y = 0
-        if self.pos_x > self.WIDTH:
+        if self.pos_x > Screen.WIDTH:
             self.pos_x = 0
         if self.pos_y < 0:
-            self.pos_y = self.HEIGHT
+            self.pos_y = Screen.HEIGHT
         if self.pos_x < 0:
-            self.pos_x = self.WIDTH
+            self.pos_x = Screen.WIDTH
 
     def move(self):
         neg_pos = choice([1, -1])
@@ -56,8 +53,11 @@ class RobotAttack(Robot):
 
     @staticmethod
     def create_robotAttack(robotAttack_list, image, screen, robot):
-        WIDTH, HEIGHT = screen.get_size()
         for i in range(robot.count_robotAttack):
-            robotAttack = RobotAttack((RobotAttack._count_coord(WIDTH),
-                                       RobotAttack._count_coord(HEIGHT)), image, screen)
+            robotAttack = RobotAttack((RobotAttack._count_coord(Screen.WIDTH),
+                                       RobotAttack._count_coord(Screen.HEIGHT)), image, screen)
             robotAttack_list.append(robotAttack)
+
+    @staticmethod
+    def delete_robotAttack(robotAttack_list):
+        robotAttack_list.clear()

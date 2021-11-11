@@ -1,8 +1,9 @@
-from pygame import Vector2
-
+from screen import Screen
+from superShot_holder import SuperShot_holder
 
 class Robot:
     SIZE = 72
+    IS_DEAD = False
 
     def __init__(self, pos, robot_img, count_robotAttack, health=100):
         self.pos_x, self.pos_y = pos[0], pos[1]
@@ -29,19 +30,19 @@ class Robot:
         return self.hit
 
     def move_a(self):
-        if self.health > 0:
+        if self.pos_x > 0:
             self.pos_x -= Robot.SIZE
 
     def move_w(self):
-        if self.health > 0:
+        if self.pos_y > 0:
             self.pos_y -= Robot.SIZE
 
     def move_d(self):
-        if self.health > 0:
+        if self.pos_x < Screen.WIDTH - Robot.SIZE:
             self.pos_x += Robot.SIZE
 
     def move_s(self):
-        if self.health > 0:
+        if self.pos_y < Screen.HEIGHT - Robot.SIZE:
             self.pos_y += Robot.SIZE
 
     def move(self, key):
@@ -50,23 +51,26 @@ class Robot:
                       "s": self.move_s,
                       "d": self.move_d}
 
-        if move_in_direction := directions.get(key):
-            move_in_direction()
+        if self.health > 0:
+            if move_in_direction := directions.get(key):
+                move_in_direction()
 
 
     def get_collison(self, ra, obj):
-        print(f"R: {obj.pos_x, obj.pos_y} A: {ra.pos_x, ra.pos_y}")
         return ra.pos_x <= obj.pos_x <= ra.pos_x + ra.image.get_size()[0] and ra.pos_y <= \
                 obj.pos_y <= ra.pos_y + ra.image.get_size()[1]
 
-    def robotAttack_collision(self, robotAttack_list, shot):
+    def robotAttack_collision(self, robotAttack_list, robot, shot=None):
         for ra in robotAttack_list[::-1]:
-            if self.get_collison(ra, shot):
-                robotAttack_list.remove(ra)
-                self.hit += 1
-                shot.is_active = False
+            if not (shot is None):
+                if self.get_collison(ra, shot):
+                    robotAttack_list.remove(ra)
+                    self.hit += 1
+                    SuperShot_holder.add_chance()
+                    shot.is_active = False
 
-            elif self.get_collison(ra, self):
-                print("CHECK ROB COL")
+            if self.get_collison(ra, robot):
                 robotAttack_list.remove(ra)
-                self.health -= 100 // self.count_robotAttack
+                self.health -= 30
+                if self.health < 0:
+                    self.health = 0
