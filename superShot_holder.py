@@ -2,6 +2,8 @@ import pygame
 from pygame.color import THECOLORS
 from screen import Screen
 
+pygame.init()
+
 
 class SuperShot_holder:
     shot = 0

@@ -12,6 +12,7 @@ from superShot_holder import SuperShot_holder
 # -----------FUNCTION------------------------
 def check_final(robot, robotAttack_list):
     if robot.get_health() <= 0:
+        pygame.mixer.music.load("music/lose_mus.mp3")
         Robot.IS_DEAD = True
         Screen.is_final_scene = True
         screen.blit(lose_img, (0, 0))
@@ -19,12 +20,15 @@ def check_final(robot, robotAttack_list):
         text = font.render(str('YOU DEAD'), True, THECOLORS['red'])
         screen.blit(text, (Screen.WIDTH // 2 - 250, 100))
     elif len(robotAttack_list) == 0 and robot.get_health() > 0:
+        pygame.mixer.music.load("music/win_mus.mp3")
         Screen.is_final_scene = True
         screen.blit(win_img, (0, 0))
         font = pygame.font.SysFont('couriernew', 100)
         text = font.render(str('YOU WIN'), True, THECOLORS['green'])
         screen.blit(text, (Screen.WIDTH // 2 - 200, 100))
 
+
+pygame.init()
 
 # ------IMAGE---------------------
 robot_img = pygame.image.load("img/robot.png")
@@ -35,6 +39,13 @@ win_img = pygame.image.load("img/win.jpeg")
 lose_img = pygame.image.load("img/lose.jpg")
 # --------------------------------
 
+# ------MUSIC---------------------
+pygame.mixer.music.load("music/music_for_back.mp3")
+shot_mus = pygame.mixer.Sound("music/shot_music.mp3")
+superShot_mus = pygame.mixer.Sound("music/superShot_mus.mp3")
+# --------------------------------
+
+
 # ------VAR-----------------------
 robotAttack_list = []
 # --------------------------------
@@ -44,9 +55,10 @@ with open("readme.md", "r", encoding="utf-8") as info:
     print(info_text)
 
 count_robotAttack = int(input("\nСКОЛЬКО РОБОТОВ СОЗДАТЬ? "))
+pygame.mixer.music.play()
 
 # ------PYGAME--------------------
-pygame.init()
+
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((Screen.WIDTH, Screen.HEIGHT))
 pygame.display.set_caption("ROBOTS")
@@ -73,8 +85,10 @@ while True:
 
             elif event.key in [pygame.K_RIGHT, pygame.K_LEFT, pygame.K_UP, pygame.K_DOWN] and len(shoots) == 0:
                 shoots.append(Shot(robot, shot_img, event.key, screen))
+                shot_mus.play()
 
             elif event.key == pygame.K_SPACE and len(shoots) == 0 and SuperShot_holder.is_superShot:
+                superShot_mus.play()
                 SuperShot_holder.is_superShot = False
                 SuperShot_holder.shot = 0
                 for k in [pygame.K_RIGHT, pygame.K_LEFT, pygame.K_UP, pygame.K_DOWN]:
