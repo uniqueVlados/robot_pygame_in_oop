@@ -1,5 +1,6 @@
 import pygame
 import sys
+from random import randint
 from pygame.color import THECOLORS
 from dead_holder import DeadHolder
 from robot import Robot
@@ -8,6 +9,7 @@ from health_holder import HealthHolder
 from shot import Shot
 from screen import Screen
 from superShot_holder import SuperShot_holder
+
 
 # -----------FUNCTION------------------------
 def check_final(robot, robotAttack_list):
@@ -48,6 +50,8 @@ superShot_mus = pygame.mixer.Sound("music/superShot_mus.mp3")
 
 # ------VAR-----------------------
 robotAttack_list = []
+speed = 300
+counter_for_create_robot = 0
 # --------------------------------
 
 with open("readme.md", "r", encoding="utf-8") as info:
@@ -70,6 +74,7 @@ robot = Robot((0, 0), robot_img, count_robotAttack)
 RobotAttack.create_robotAttack(robotAttack_list, robotAttack_img, screen, robot)
 health_holder = HealthHolder(robot)
 dead_holder = DeadHolder(robot)
+superShot_holder = SuperShot_holder()
 shoots = []
 # -------------------------------------------
 
@@ -87,10 +92,10 @@ while True:
                 shoots.append(Shot(robot, shot_img, event.key, screen))
                 shot_mus.play()
 
-            elif event.key == pygame.K_SPACE and len(shoots) == 0 and SuperShot_holder.is_superShot:
+            elif event.key == pygame.K_SPACE and len(shoots) == 0 and superShot_holder.is_superShot:
                 superShot_mus.play()
-                SuperShot_holder.is_superShot = False
-                SuperShot_holder.shot = 0
+                superShot_holder.is_superShot = False
+                superShot_holder.shot = 0
                 for k in [pygame.K_RIGHT, pygame.K_LEFT, pygame.K_UP, pygame.K_DOWN]:
                     shoots.append(Shot(robot, shot_img, k, screen))
 
@@ -100,19 +105,25 @@ while True:
     robot.update(screen)
     health_holder.update(screen)
     dead_holder.update(screen)
-    SuperShot_holder.update(screen)
+    superShot_holder.update(screen)
 
     for shot in shoots[::-1]:
         if not shot.is_active:
             shoots.remove(shot)
         else:
             shot.update()
-            robot.robotAttack_collision(robotAttack_list, robot, shot)
-    robot.robotAttack_collision(robotAttack_list, robot)
+            robot.robotAttack_collision(robotAttack_list, superShot_holder, robot, shot)
+    robot.robotAttack_collision(robotAttack_list, superShot_holder, robot)
 
     check_final(robot, robotAttack_list)
     if Robot.IS_DEAD:
         RobotAttack.delete_robotAttack(robotAttack_list)
     RobotAttack.diff_move(robotAttack_list, screen)
+
+    counter_for_create_robot += 1
+    if counter_for_create_robot == speed and not Screen.is_final_scene:
+        robot.count_robotAttack = randint(2, 3)
+        RobotAttack.create_robotAttack(robotAttack_list, robotAttack_img, screen, robot)
+        counter_for_create_robot = 0
     clock.tick(60)
     pygame.display.update()

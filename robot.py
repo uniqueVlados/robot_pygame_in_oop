@@ -68,19 +68,20 @@ class Robot:
         return ra.pos_x <= obj.pos_x <= ra.pos_x + ra.image.get_size()[0] and ra.pos_y <= \
                 obj.pos_y <= ra.pos_y + ra.image.get_size()[1]
 
-    def robotAttack_collision(self, robotAttack_list, robot, shot=None):
-        for ra in robotAttack_list[::-1]:
-            if not (shot is None):
+    def robotAttack_collision(self, robotAttack_list, superShot_holder, robot, shot=None):
+        if not (shot is None):
+            for ra in robotAttack_list[::-1]:
                 if self.get_collison(ra, shot):
                     shot_to_robotAttack_mus.play()
                     robotAttack_list.remove(ra)
                     self.hit += 1
-                    SuperShot_holder.add_chance()
+                    superShot_holder.add_chance()
                     shot.is_active = False
-
-            if self.get_collison(ra, robot):
-                robotAttack_list.remove(ra)
-                robot_to_robotAttack_mus.play()
-                self.health -= 30
-                if self.health < 0:
-                    self.health = 0
+        else:
+            for ra in robotAttack_list[::-1]:
+                if self.get_collison(ra, robot):
+                    robotAttack_list.remove(ra)
+                    robot_to_robotAttack_mus.play()
+                    self.health -= 30
+                    if self.health < 0:
+                        self.health = 0
