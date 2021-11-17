@@ -15,10 +15,8 @@ class SuperShot_holder:
     def add_chance(self):
         self.shot += 24
 
-    def set_100_p(self):
-        if self.shot >= 100:
-            return True
-        return False
+    def check_100_p(self):
+        return self.shot >= 100
 
     def get_text(self):
         color = self.colors[(self.shot - 1) // 25]
@@ -26,9 +24,9 @@ class SuperShot_holder:
         return text
 
     def update(self, screen):
-        if self.set_100_p():
+        if self.check_100_p():
             self.shot = 100
-        if self.set_100_p():
+        if self.check_100_p():
             self.is_superShot = True
             self.shot = 100
             text_press = pygame.font.SysFont('couriernew', 40).render("PRESS SPACE", True, THECOLORS["red"])
