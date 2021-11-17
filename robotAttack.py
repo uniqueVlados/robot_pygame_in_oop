@@ -70,25 +70,25 @@ class RobotAttack(Robot):
     def delete_robotAttack(robotAttack_list):
         robotAttack_list.clear()
 
-    def get_col(self, ra, obj):
-        return ra.pos_x <= obj.pos_x <= ra.pos_x + ra.image.get_size()[0] and ra.pos_y <= \
-                obj.pos_y <= ra.pos_y + ra.image.get_size()[1]
+    def get_col(self, obj):
+        return self.pos_x <= obj.pos_x <= self.pos_x + self.image.get_size()[0] and self.pos_y <= \
+                obj.pos_y <= self.pos_y + self.image.get_size()[1]
 
-    def collision_robot(self, robotAttack_list, ra, robot):
-        if self.get_col(ra, robot):
-            robotAttack_list.remove(ra)
+    def collision_robot(self, robotAttack_list, robot):
+        if self.get_col(robot):
+            robotAttack_list.remove(self)
             robot_to_robotAttack_mus.play()
             robot.health -= 30
             if robot.health < 0:
                 robot.health = 0
             # shot.is_active = False
 
-    def collision_shot(self, robotAttack_list, ra, superShot_holder, shoots, robot):
+    def collision_shot(self, robotAttack_list, superShot_holder, shoots, robot):
         for shot in shoots[::-1]:
-            if self.get_col(ra, shot):
+            if self.get_col(shot):
                 shot_to_robotAttack_mus.play()
                 if shot.is_active:
                     shoots.remove(shot)
-                    robotAttack_list.remove(ra)
+                    robotAttack_list.remove(self)
                     robot.hit += 1
                     superShot_holder.add_chance()

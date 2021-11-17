@@ -67,8 +67,8 @@ def create_new_robotsAttack_by_time(speed, screen_obj):
 
 def robotAttack_collision(robotAttack_list):
     for ra in robotAttack_list[::-1]:
-        ra.collision_robot(robotAttack_list, ra, robot)
-        ra.collision_shot(robotAttack_list, ra, superShot_holder, shoots, robot)
+        ra.collision_robot(robotAttack_list, robot)
+        ra.collision_shot(robotAttack_list, superShot_holder, shoots, robot)
 
 
 def shots_behavior(shoots):
