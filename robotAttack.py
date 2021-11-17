@@ -1,6 +1,13 @@
 from random import randint, choice
+import pygame
 from robot import Robot
 from screen import Screen
+
+pygame.init()
+# ------MUSIC---------------------
+shot_to_robotAttack_mus = pygame.mixer.Sound("music/shot_to_robotAttack_mus.mp3")
+robot_to_robotAttack_mus = pygame.mixer.Sound("music/robot_to_robotAttack.mp3")
+# --------------------------------
 
 class RobotAttack(Robot):
     SPEED_START = 50
@@ -37,6 +44,7 @@ class RobotAttack(Robot):
                 self.pos_y -= Robot.SIZE
         self.check_pos()
 
+
     @staticmethod
     def diff_move(robotAttack_list, screen):
         for r in robotAttack_list:
@@ -61,3 +69,26 @@ class RobotAttack(Robot):
     @staticmethod
     def delete_robotAttack(robotAttack_list):
         robotAttack_list.clear()
+
+    def get_col(self, ra, obj):
+        return ra.pos_x <= obj.pos_x <= ra.pos_x + ra.image.get_size()[0] and ra.pos_y <= \
+                obj.pos_y <= ra.pos_y + ra.image.get_size()[1]
+
+    def collision_robot(self, robotAttack_list, ra, robot):
+        if self.get_col(ra, robot):
+            robotAttack_list.remove(ra)
+            robot_to_robotAttack_mus.play()
+            robot.health -= 30
+            if robot.health < 0:
+                robot.health = 0
+            # shot.is_active = False
+
+    def collision_shot(self, robotAttack_list, ra, superShot_holder, shoots, robot):
+        for shot in shoots[::-1]:
+            if self.get_col(ra, shot):
+                shot_to_robotAttack_mus.play()
+                if shot.is_active:
+                    shoots.remove(shot)
+                    robotAttack_list.remove(ra)
+                    robot.hit += 1
+                    superShot_holder.add_chance()

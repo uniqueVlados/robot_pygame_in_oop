@@ -20,16 +20,6 @@ class Shot:
     def set_start_pos(self, robot):
         self.pos_x, self.pos_y = robot.pos[0] + 30, robot.pos[1] + 30
 
-    # @property
-    # def screen_width(self):
-    #     width, height = self.screen.get_size()
-    #     return width
-    #
-    # @property
-    # def screen_height(self):
-    #     width, height = self.screen.get_size()
-    #     return height
-
     def _move_a(self):
         if self.pos_x > 0:
             self.pos_x -= Shot.SPEED
@@ -49,7 +39,7 @@ class Shot:
             self.is_active = False
 
     def _move_s(self):
-        if self.pos_y < Screen.HEIGHT -  self.image.get_size()[1]:
+        if self.pos_y < Screen.HEIGHT - self.image.get_size()[1]:
             self.pos_y += Shot.SPEED
         else:
             self.is_active = False
@@ -63,6 +53,7 @@ class Shot:
         if move_in_direction := directions.get(key):
             move_in_direction()
 
-    def update(self):
+    def update(self, screen):
         self.move(self.side)
-        self.screen.blit(self.image, (self.pos_x, self.pos_y))
+        screen.blit(self.image, (self.pos_x, self.pos_y))
+

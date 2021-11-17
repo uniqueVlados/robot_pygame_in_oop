@@ -2,13 +2,6 @@ from screen import Screen
 from superShot_holder import SuperShot_holder
 import pygame
 
-pygame.init()
-# ------MUSIC---------------------
-shot_to_robotAttack_mus = pygame.mixer.Sound("music/shot_to_robotAttack_mus.mp3")
-robot_to_robotAttack_mus = pygame.mixer.Sound("music/robot_to_robotAttack.mp3")
-# --------------------------------
-
-
 class Robot:
     SIZE = 72
     IS_DEAD = False
@@ -63,25 +56,3 @@ class Robot:
             if move_in_direction := directions.get(key):
                 move_in_direction()
 
-
-    def get_collison(self, ra, obj):
-        return ra.pos_x <= obj.pos_x <= ra.pos_x + ra.image.get_size()[0] and ra.pos_y <= \
-                obj.pos_y <= ra.pos_y + ra.image.get_size()[1]
-
-    def robotAttack_collision(self, robotAttack_list, superShot_holder, robot, shot=None):
-        if not (shot is None):
-            for ra in robotAttack_list[::-1]:
-                if self.get_collison(ra, shot):
-                    shot_to_robotAttack_mus.play()
-                    robotAttack_list.remove(ra)
-                    self.hit += 1
-                    superShot_holder.add_chance()
-                    shot.is_active = False
-        else:
-            for ra in robotAttack_list[::-1]:
-                if self.get_collison(ra, robot):
-                    robotAttack_list.remove(ra)
-                    robot_to_robotAttack_mus.play()
-                    self.health -= 30
-                    if self.health < 0:
-                        self.health = 0
